@@ -1,4 +1,4 @@
-// config/db.js
+
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 
@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT || 1433,
     dialectOptions: {
       options: {
-        encrypt: true, // Use encryption
+        encrypt: true,
         enableArithAbort: true,
       },
     },
