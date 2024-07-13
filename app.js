@@ -1,27 +1,15 @@
-// app.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/userRoutes');
-const dotenv = require('dotenv');
-const sequelize = require('./config/db');
 const cors = require('cors');
-
-dotenv.config();
-
+const sequelize = require('./config/db');
+const transportRoutes = require('./routes/transportRoutes');
 
 const app = express();
-
-app.use(cors({ 
-    origin: '*',
-    methods: 'GET, POST, PUT, DELETE',
-    allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept, Access-Control-Allow-Origin',
- }));
-
-// Middleware
 app.use(bodyParser.json());
+app.use(cors());
 
-// Routes
-app.use('/api', userRoutes);
+app.use('/api', transportRoutes);
 
 const PORT = process.env.PORT || 5000;
 
@@ -29,4 +17,6 @@ sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-}).catch(err => console.log('Error: ' + err));
+}).catch(err => {
+  console.error('Failed to sync database:', err);
+});

@@ -1,9 +1,24 @@
+
 {
-    "development": {
-      "username": "myuser",
-      "password": "Aakash@123",
-      "database": "mydataaakash",
-      "host": "uc51.udtichidya.com",
-      "dialect": "mysql"
-    }
+  "development": {
+    "username": "myuser",
+    "password": "Maha@5630",
+    "database": "mydataaakash",
+    "host": "uc51.udtichidya.com",
+    "dialect": "mssql"
+  },
+  "test": {
+    "username": "myuser",
+    "password": "Maha@5630",
+    "database": "mydataaakash",
+    "host": "uc51.udtichidya.com",
+    "dialect": "mssql"
+  },
+  "production": {
+    "username": "myuser",
+    "password": "Maha@5630",
+    "database": "mydataaakash",
+    "host": "uc51.udtichidya.com",
+    "dialect": "mssql"
+  }
 }
