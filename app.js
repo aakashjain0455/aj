@@ -33,7 +33,7 @@ const punchOrderRoutes = require('./routes/punchOrderRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const creditLimitRoutes = require('./routes/creditLimitRoutes');
 const storeResponseRoutes = require('./routes/storeResponseRoutes');
-
+const orderDataRoutes = require('./routes/orderDataRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -80,6 +80,7 @@ app.use('/api', punchOrderRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/credit-limits', creditLimitRoutes);
 app.use('/api', storeResponseRoutes);
+app.use('/api', orderDataRoutes);
 
 
 const PORT = process.env.PORT || 5000;
