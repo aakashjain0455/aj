@@ -41,9 +41,10 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-    res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
-    next();
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  next();
 });
+
 
 
 // Updated CORS configuration
