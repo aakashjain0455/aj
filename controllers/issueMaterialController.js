@@ -17,7 +17,7 @@ exports.getMaterialIssues = async (req, res) => {
     const issues = await IssueMaterial.findAll({ where: whereClause });
     
     const filteredIssues = issues.map(issue => {
-      const parsedData = JSON.parse(issue.data).filter(item => item.code === itemCode);
+      const parsedData = JSON.parse(issue.data).slice(1).filter(item => item.code == itemCode);
       return parsedData.length > 0 ? { ...issue.toJSON(), data: parsedData } : null;
     }).filter(issue => issue !== null);
 
