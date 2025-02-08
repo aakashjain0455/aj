@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const IssueMaterial = require('../models/IssueMaterial');
 
 exports.getMaterialIssues = async (req, res) => {
