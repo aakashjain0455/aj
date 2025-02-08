@@ -17,7 +17,7 @@ exports.getMaterialReceipts = async (req, res) => {
     const receipts = await MaterialReceipt.findAll({ where: whereClause });
     
     const filteredReceipts = receipts.map(receipt => {
-      const parsedData = JSON.parse(receipt.data).filter(item => item.code === itemCode);
+      const parsedData = JSON.parse(receipt.data).slice(1).filter(item => item.code == itemCode);
       return parsedData.length > 0 ? { ...receipt.toJSON(), data: parsedData } : null;
     }).filter(receipt => receipt !== null);
 
