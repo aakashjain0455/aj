@@ -1,20 +1,26 @@
 const MouldingData = require('../models/MouldingData');
 
-// Get all moulding data for a specific order
+// ✅ Get all moulding data for a specific order
 exports.getMouldingDataByOrder = async (req, res) => {
   try {
     const { orderNumber } = req.params;
     const data = await MouldingData.findAll({ where: { orderNumber } });
-    res.json(data);
+
+    res.json(data.map(entry => ({
+      orderNumber: entry.orderNumber,
+      lotNo: entry.lotNo,
+      storeData: entry.storeData  // ✅ JSON response
+    })));
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// ✅ Save Moulding Data (Cutting, Packing, Dispatch as JSON)
 exports.saveMouldingData = async (req, res) => {
   try {
     let data = req.body;
-
     if (!Array.isArray(data)) {
       data = [data]; // Ensure it's an array
     }
@@ -29,10 +35,11 @@ exports.saveMouldingData = async (req, res) => {
       const newEntry = await MouldingData.create({
         orderNumber: entry.orderNumber,
         lotNo: entry.lotNo,
-        tableType: entry.tableType,
-        date: entry.date,
-        totalPcs: entry.totalPcs || 0,
-        billNo: entry.billNo || null,
+        storeData: {  
+          cuttingRows: entry.cuttingRows || [],
+          packingRows: entry.packingRows || [],
+          deliveryRows: entry.deliveryRows || []
+        }
       });
 
       insertedEntries.push(newEntry);
@@ -46,54 +53,22 @@ exports.saveMouldingData = async (req, res) => {
   }
 };
 
-
-
-// Delete a record
-exports.deleteMouldingData = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await MouldingData.destroy({ where: { id } });
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
+// ✅ Delete all records for a specific order
 exports.deleteMouldingByOrder = async (req, res) => {
   try {
-    let { orderNumber } = req.params;
-    orderNumber = isNaN(orderNumber) ? orderNumber : parseInt(orderNumber);
+    const { orderNumber } = req.params;
 
-    console.log(`🛠️ Attempting SQL DELETE for Order: ${orderNumber}`);
+    console.log(`🛠️ Attempting DELETE for Order: ${orderNumber}`);
 
-    const transaction = await sequelize.transaction(); // Start a transaction
+    const deletedRows = await MouldingData.destroy({ where: { orderNumber } });
 
-    try {
-      // **Delete existing records for the given orderNumber**
-      const deletedRows = await sequelize.query(
-        `DELETE FROM MouldingData WHERE orderNumber = :orderNumber`,
-        {
-          replacements: { orderNumber },
-          type: QueryTypes.DELETE,
-          transaction, // Ensure transaction is applied
-        }
-      );
-
-      console.log(`🗑️ SQL Deleted Rows Count: ${deletedRows[1] || 0}`);
-
-      await transaction.commit(); // Commit transaction
-
-      if (deletedRows[1] === 0) {
-        return res.status(404).json({ message: `No records found for order ${orderNumber}` });
-      }
-
-      res.status(200).json({ message: `Deleted records for order ${orderNumber}.` });
-    } catch (error) {
-      await transaction.rollback(); // Rollback on error
-      throw error;
+    if (deletedRows === 0) {
+      return res.status(404).json({ message: `No records found for order ${orderNumber}` });
     }
+
+    res.status(200).json({ message: `Deleted records for order ${orderNumber}.` });
   } catch (error) {
-    console.error("❌ SQL Server DELETE Error:", error);
+    console.error("❌ Error deleting data:", error);
     res.status(500).json({ error: "Internal server error while deleting data." });
   }
 };
