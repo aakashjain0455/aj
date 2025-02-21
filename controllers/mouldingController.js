@@ -63,11 +63,18 @@ exports.deleteMouldingData = async (req, res) => {
 exports.deleteMouldingByOrder = async (req, res) => {
   try {
     const { orderNumber } = req.params;
-    
-    await MouldingData.destroy({ where: { orderNumber } });
 
-    console.log(`🗑️ Deleted existing data for Order ${orderNumber}`);
-    res.status(200).json({ message: `All records for order ${orderNumber} deleted successfully.` });
+    console.log(`🛠️ Attempting to delete records for Order: ${orderNumber}`); // ✅ Debug log
+
+    const deletedRows = await MouldingData.destroy({ where: { orderNumber } });
+
+    console.log(`🗑️ Deleted Rows Count: ${deletedRows}`); // ✅ Check how many rows deleted
+
+    if (deletedRows === 0) {
+      return res.status(404).json({ message: `No records found for order ${orderNumber}` });
+    }
+
+    res.status(200).json({ message: `Deleted ${deletedRows} records for order ${orderNumber}.` });
   } catch (error) {
     console.error("❌ Error deleting moulding data:", error);
     res.status(500).json({ error: "Internal server error while deleting data." });
