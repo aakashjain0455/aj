@@ -36,6 +36,7 @@ const storeResponseRoutes = require('./routes/storeResponseRoutes');
 const MouldingResponse = require('./models/MouldingResponse'); // Import the model
 const mouldingResponseRoutes = require('./routes/mouldingResponseRoutes');
 const dispatchResponseRoutes = require('./routes/dispatchResponseRoutes');
+const mouldingRoutes = require('./routes/mouldingRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -91,6 +92,7 @@ app.use('/api/credit-limits', creditLimitRoutes);
 app.use('/api', storeResponseRoutes);
 app.use('/api', mouldingResponseRoutes);
 app.use('/api', dispatchResponseRoutes);
+app.use('/api', mouldingRoutes);
 
 const PORT = process.env.PORT || 5000;
 
