@@ -35,7 +35,7 @@ const MouldingData = sequelize.define('MouldingData', {
   timestamps: true,
   indexes: [
     {
-      unique: true,
+      unique: false,
       fields: ['orderNumber', 'lotNo', 'tableType'], // Ensure uniqueness
     }
   ]
