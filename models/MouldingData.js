@@ -15,30 +15,12 @@ const MouldingData = sequelize.define('MouldingData', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  tableType: {
-    type: DataTypes.ENUM('Cutting', 'Packing', 'Dispatch'),
+  storeData: {
+    type: DataTypes.JSON,  // ✅ JSON Column to store Cutting, Packing, Dispatch Data
     allowNull: false,
-  },
-  date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  totalPcs: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  billNo: {
-    type: DataTypes.STRING,
-    allowNull: true,
   }
 }, {
   timestamps: true,
-  indexes: [
-    {
-      unique: false,
-      fields: ['orderNumber', 'lotNo', 'tableType'], // Ensure uniqueness
-    }
-  ]
 });
 
 module.exports = MouldingData;
