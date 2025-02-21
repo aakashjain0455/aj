@@ -61,26 +61,29 @@ exports.deleteMouldingData = async (req, res) => {
 
 exports.deleteMouldingByOrder = async (req, res) => {
   try {
-    const { orderNumber } = req.params;
+    let { orderNumber } = req.params;
+    orderNumber = isNaN(orderNumber) ? orderNumber : parseInt(orderNumber);
 
-    console.log(`🛠️ Attempting to delete records for Order: ${orderNumber}`);
+    console.log(`🛠️ Attempting SQL DELETE for Order: ${orderNumber}`);
 
-    // Ensure orderNumber is correctly formatted for deletion
-    const deletedRows = await MouldingData.destroy({
-      where: { orderNumber: orderNumber },
-      force: true, // Ensure hard delete if soft delete is enabled
-    });
+    // Use RAW SQL DELETE query for Microsoft SQL Server
+    const [deletedRows] = await sequelize.query(
+      `DELETE FROM MouldingData WHERE orderNumber = :orderNumber;`,
+      {
+        replacements: { orderNumber },
+        type: QueryTypes.DELETE,
+      }
+    );
 
-    console.log(`🗑️ Deleted Rows Count: ${deletedRows}`);
+    console.log(`🗑️ SQL Deleted Rows Count: ${deletedRows}`);
 
     if (deletedRows === 0) {
       return res.status(404).json({ message: `No records found for order ${orderNumber}` });
     }
 
-    res.status(200).json({ message: `Deleted ${deletedRows} records for order ${orderNumber}.` });
+    res.status(200).json({ message: `Deleted records for order ${orderNumber}.` });
   } catch (error) {
-    console.error("❌ Error deleting moulding data:", error);
+    console.error("❌ SQL Server DELETE Error:", error);
     res.status(500).json({ error: "Internal server error while deleting data." });
   }
 };
-
