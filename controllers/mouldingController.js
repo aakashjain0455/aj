@@ -59,16 +59,19 @@ exports.deleteMouldingData = async (req, res) => {
   }
 };
 
-// Delete all records for a given orderNumber
 exports.deleteMouldingByOrder = async (req, res) => {
   try {
     const { orderNumber } = req.params;
 
-    console.log(`🛠️ Attempting to delete records for Order: ${orderNumber}`); // ✅ Debug log
+    console.log(`🛠️ Attempting to delete records for Order: ${orderNumber}`);
 
-    const deletedRows = await MouldingData.destroy({ where: { orderNumber } });
+    // Ensure orderNumber is correctly formatted for deletion
+    const deletedRows = await MouldingData.destroy({
+      where: { orderNumber: orderNumber },
+      force: true, // Ensure hard delete if soft delete is enabled
+    });
 
-    console.log(`🗑️ Deleted Rows Count: ${deletedRows}`); // ✅ Check how many rows deleted
+    console.log(`🗑️ Deleted Rows Count: ${deletedRows}`);
 
     if (deletedRows === 0) {
       return res.status(404).json({ message: `No records found for order ${orderNumber}` });
@@ -80,3 +83,4 @@ exports.deleteMouldingByOrder = async (req, res) => {
     res.status(500).json({ error: "Internal server error while deleting data." });
   }
 };
+
