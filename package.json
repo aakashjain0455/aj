@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "preinstall": "rm -rf yarn.lock",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,9 +26,3 @@
     "uuid": "^10.0.0"
   }
 }
-
-"scripts": {
-  "start": "node index.js",
-  "preinstall": "rm -rf yarn.lock"
-}
-
