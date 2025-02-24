@@ -9,7 +9,7 @@ exports.getCuttingVsPacking = async (req, res) => {
         let queryOptions = {};
 
         if (orderNumber) {
-            queryOptions.where = { orderNumber };  // ✅ Fetch only data for this order
+            queryOptions.where = { orderNumber };
         }
 
         let records = await CuttingVsPacking.findAll(queryOptions);
@@ -19,19 +19,20 @@ exports.getCuttingVsPacking = async (req, res) => {
             return res.status(404).json({ message: "No records found." });
         }
 
-        // ✅ Ensure `data` field is parsed into JSON before sending it to frontend
+        // ✅ Parse the `data` field from string to JSON
         records = records.map(record => ({
             ...record.toJSON(),
-            data: JSON.parse(record.data)  // ✅ Fixing the issue by parsing `data`
+            data: JSON.parse(record.data)  // ✅ Convert `data` from string to JSON object
         }));
 
-        console.log("✅ Cutting vs Packing Data Sent to Frontend:", JSON.stringify(records, null, 2));
+        console.log("✅ Fixed Cutting vs Packing Data Sent to Frontend:", JSON.stringify(records, null, 2));
         res.json(records);
     } catch (error) {
         console.error("❌ Error Fetching Cutting vs Packing Data:", error);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 exports.createCuttingVsPacking = async (req, res) => {
