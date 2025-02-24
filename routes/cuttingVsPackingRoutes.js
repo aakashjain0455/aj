@@ -1,7 +1,8 @@
-// cuttingVsPackingRoutes.js (Routes)
 const express = require('express');
 const router = express.Router();
+const CuttingVsPacking = require('../models/CuttingVsPacking');  // ✅ Import the model
 const cuttingVsPackingController = require('../controllers/cuttingVsPackingController');
+
 
 router.get('/cuttingVsPacking', async (req, res) => {
     const { orderNumber } = req.query;
