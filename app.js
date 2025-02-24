@@ -37,6 +37,7 @@ const MouldingResponse = require('./models/MouldingResponse'); // Import the mod
 const mouldingResponseRoutes = require('./routes/mouldingResponseRoutes');
 const dispatchResponseRoutes = require('./routes/dispatchResponseRoutes');
 const mouldingRoutes = require('./routes/mouldingRoutes');
+const cuttingVsPackingRoutes = require('./routes/cuttingVsPackingRoutes');
 
 
 
@@ -95,6 +96,7 @@ app.use('/api', storeResponseRoutes);
 app.use('/api', mouldingResponseRoutes);
 app.use('/api', dispatchResponseRoutes);
 app.use('/api', mouldingRoutes);
+app.use('/api', cuttingVsPackingRoutes);
 
 
 
