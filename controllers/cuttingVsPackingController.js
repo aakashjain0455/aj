@@ -2,17 +2,37 @@
 const CuttingVsPacking = require('../models/CuttingVsPacking');
 
 exports.getCuttingVsPacking = async (req, res) => {
-  try {
-    const records = await CuttingVsPacking.findAll();
-    const parsedRecords = records.map(record => ({
-      ...record.toJSON(),
-      data: JSON.parse(record.data)
-    }));
-    res.json(parsedRecords);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        console.log("📡 Fetching Cutting vs Packing Data...");
+
+        const { orderNumber } = req.query;
+        let queryOptions = {};
+
+        if (orderNumber) {
+            queryOptions.where = { orderNumber };  // ✅ Fetch only data for this order
+        }
+
+        let records = await CuttingVsPacking.findAll(queryOptions);
+
+        if (!records || records.length === 0) {
+            console.warn(`⚠️ No Cutting vs Packing data found for orderNumber: ${orderNumber || "All Orders"}`);
+            return res.status(404).json({ message: "No records found." });
+        }
+
+        // ✅ Ensure `data` field is parsed into JSON before sending it to frontend
+        records = records.map(record => ({
+            ...record.toJSON(),
+            data: JSON.parse(record.data)  // ✅ Fixing the issue by parsing `data`
+        }));
+
+        console.log("✅ Cutting vs Packing Data Sent to Frontend:", JSON.stringify(records, null, 2));
+        res.json(records);
+    } catch (error) {
+        console.error("❌ Error Fetching Cutting vs Packing Data:", error);
+        res.status(500).json({ error: error.message });
+    }
 };
+
 
 exports.createCuttingVsPacking = async (req, res) => {
   try {
