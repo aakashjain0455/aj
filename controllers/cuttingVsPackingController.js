@@ -53,15 +53,20 @@ exports.updateCuttingVsPacking = async (req, res) => {
   try {
     const { id } = req.params;
     const { data } = req.body;
+
     const record = await CuttingVsPacking.findByPk(id);
-    if (!record) return res.status(404).json({ error: 'Record not found' });
+    if (!record) return res.status(404).json({ error: "Record not found" });
 
     await record.update({ data: JSON.stringify(data) });
+
+    console.log(`✅ Updated Cutting Vs Packing Record ID: ${id}`);
     res.json(record);
   } catch (error) {
+    console.error("❌ Error Updating Cutting Vs Packing Data:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.deleteCuttingVsPacking = async (req, res) => {
   try {
