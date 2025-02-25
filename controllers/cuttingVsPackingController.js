@@ -51,21 +51,9 @@ exports.createCuttingVsPacking = async (req, res) => {
 
       const { orderNumber, lotNo, data } = req.body;
 
-      // 🛑 CHECK: Log incoming data to see if `lotNo` is correct
       console.log(`📌 Received Data: orderNumber=${orderNumber}, lotNo=${lotNo}`);
 
-      // 🔥 Fix: If lotNo is missing, return an error instead of creating incorrect lots
-      if (!orderNumber || !lotNo || !data) {
-          console.error(`🚨 Error: Missing Required Fields:
-              orderNumber: ${orderNumber}, 
-              lotNo: ${lotNo}, 
-              data: ${JSON.stringify(data, null, 2)}`);
-          return res.status(400).json({ error: "Missing required fields (orderNumber, lotNo, or data)" });
-      }
-
-      console.log(`📌 Checking for existing Lot ${lotNo} in Order ${orderNumber} before creating.`);
-
-      // 🔥 Fix: Prevent duplicate lot creation
+      // 🔥 Fix: Prevent creating duplicate lot numbers
       const existingLot = await CuttingVsPacking.findOne({ where: { orderNumber, lotNo } });
 
       if (existingLot) {
@@ -73,7 +61,6 @@ exports.createCuttingVsPacking = async (req, res) => {
           return res.status(409).json({ message: "Lot already exists. Use update API instead." });
       }
 
-      // ✅ Ensure the received `lotNo` is stored without modifications
       const newRecord = await CuttingVsPacking.create({
           orderNumber,
           lotNo,  // ✅ Use frontend-defined lot number
@@ -87,6 +74,7 @@ exports.createCuttingVsPacking = async (req, res) => {
       res.status(500).json({ error: error.message });
   }
 };
+
 
 // ✅ Update existing Cutting Vs Packing entry
 exports.updateCuttingVsPacking = async (req, res) => {
