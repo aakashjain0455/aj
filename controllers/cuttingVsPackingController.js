@@ -52,20 +52,31 @@ exports.createCuttingVsPacking = async (req, res) => {
 exports.updateCuttingVsPacking = async (req, res) => {
   try {
     const { id } = req.params;
-    const { data } = req.body;
+    const { orderNumber, lotNo, data } = req.body;
 
-    const record = await CuttingVsPacking.findByPk(id);
-    if (!record) return res.status(404).json({ error: "Record not found" });
+    // Check if an existing record matches both `orderNumber` and `lotNo`
+    let record = await CuttingVsPacking.findOne({ 
+      where: { id } // Ensure correct ID is used
+    });
 
-    await record.update({ data: JSON.stringify(data) });
+    if (!record) {
+      return res.status(404).json({ error: "Record not found for update." });
+    }
 
-    console.log(`✅ Updated Cutting Vs Packing Record ID: ${id}`);
+    // Update the existing record
+    await record.update({ 
+      data: JSON.stringify(data),
+      updatedAt: new Date() // Ensure updated timestamp
+    });
+
+    console.log(`✅ Successfully updated Lot ${lotNo} for Order ${orderNumber}`);
     res.json(record);
   } catch (error) {
     console.error("❌ Error Updating Cutting Vs Packing Data:", error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 exports.deleteCuttingVsPacking = async (req, res) => {
