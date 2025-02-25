@@ -46,41 +46,46 @@ exports.getCuttingVsPacking = async (req, res) => {
 
 // ✅ Create a new Cutting Vs Packing entry
 exports.createCuttingVsPacking = async (req, res) => {
-    try {
-        logRequest(req);
+  try {
+      logRequest(req);
 
-        const { orderNumber, lotNo, data } = req.body;
+      const { orderNumber, lotNo, data } = req.body;
 
-        if (!orderNumber || !lotNo || !data) {
-            console.error(`🚨 Error: Missing Required Fields:
-                orderNumber: ${orderNumber}, 
-                lotNo: ${lotNo}, 
-                data: ${JSON.stringify(data, null, 2)}`);
-            return res.status(400).json({ error: "Missing required fields (orderNumber, lotNo, or data)" });
-        }
+      // 🛑 CHECK: Log incoming data to see if `lotNo` is correct
+      console.log(`📌 Received Data: orderNumber=${orderNumber}, lotNo=${lotNo}`);
 
-        console.log(`📌 Checking for existing Lot ${lotNo} in Order ${orderNumber} before creating.`);
+      // 🔥 Fix: If lotNo is missing, return an error instead of creating incorrect lots
+      if (!orderNumber || !lotNo || !data) {
+          console.error(`🚨 Error: Missing Required Fields:
+              orderNumber: ${orderNumber}, 
+              lotNo: ${lotNo}, 
+              data: ${JSON.stringify(data, null, 2)}`);
+          return res.status(400).json({ error: "Missing required fields (orderNumber, lotNo, or data)" });
+      }
 
-        // 🔥 Fix: Prevent duplicate lot creation
-        const existingLot = await CuttingVsPacking.findOne({ where: { orderNumber, lotNo } });
+      console.log(`📌 Checking for existing Lot ${lotNo} in Order ${orderNumber} before creating.`);
 
-        if (existingLot) {
-            console.warn(`⚠️ Lot ${lotNo} already exists for Order ${orderNumber}. Redirecting to update.`);
-            return res.status(409).json({ message: "Lot already exists. Use update API instead." });
-        }
+      // 🔥 Fix: Prevent duplicate lot creation
+      const existingLot = await CuttingVsPacking.findOne({ where: { orderNumber, lotNo } });
 
-        const newRecord = await CuttingVsPacking.create({
-            orderNumber,
-            lotNo, 
-            data: JSON.stringify(data) // ✅ Ensure data is stored as JSON
-        });
+      if (existingLot) {
+          console.warn(`⚠️ Lot ${lotNo} already exists for Order ${orderNumber}. Redirecting to update.`);
+          return res.status(409).json({ message: "Lot already exists. Use update API instead." });
+      }
 
-        console.log("✅ New Cutting Vs Packing Record Created:", JSON.stringify(newRecord, null, 2));
-        res.json(newRecord);
-    } catch (error) {
-        console.error("❌ Error Creating Cutting Vs Packing Data:", error);
-        res.status(500).json({ error: error.message });
-    }
+      // ✅ Ensure the received `lotNo` is stored without modifications
+      const newRecord = await CuttingVsPacking.create({
+          orderNumber,
+          lotNo,  // ✅ Use frontend-defined lot number
+          data: JSON.stringify(data) // ✅ Store data as JSON string
+      });
+
+      console.log("✅ New Cutting Vs Packing Record Created:", JSON.stringify(newRecord, null, 2));
+      res.json(newRecord);
+  } catch (error) {
+      console.error("❌ Error Creating Cutting Vs Packing Data:", error);
+      res.status(500).json({ error: error.message });
+  }
 };
 
 // ✅ Update existing Cutting Vs Packing entry
