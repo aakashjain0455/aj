@@ -14,7 +14,8 @@ const CuttingVsPacking = sequelize.define('CuttingVsPacking', {
   },
   lotNo: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true 
   },
   data: {
     type: DataTypes.TEXT, // Stores Cutting, Packing, Dispatch details as JSON
