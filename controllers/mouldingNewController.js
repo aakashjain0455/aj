@@ -3,23 +3,38 @@ const MouldingNew = require('../models/MouldingNew');
 // Fetch Cutting vs Packing data for a specific order
 exports.getMouldingData = async (req, res) => {
   try {
-    const { orderNumber } = req.query; // Fetching via order number
-    const data = await MouldingNew.findAll({ where: { orderNumber } });
+    const { orderNumber } = req.query;
 
-    if (!data.length) {
-      return res.json([]);
+    if (orderNumber) {
+      // Fetch specific order's data
+      const data = await MouldingNew.findAll({ where: { orderNumber } });
+
+      if (!data.length) {
+        return res.json([]);
+      }
+
+      const parsedData = data.map(entry => ({
+        ...entry.toJSON(),
+        data: JSON.parse(entry.data)
+      }));
+
+      return res.json(parsedData);
+    } else {
+      // ✅ Fetch all orders when no orderNumber provided
+      const allData = await MouldingNew.findAll();
+
+      const parsedData = allData.map(entry => ({
+        ...entry.toJSON(),
+        data: JSON.parse(entry.data)
+      }));
+
+      return res.json(parsedData);
     }
-
-    const parsedData = data.map(entry => ({
-      ...entry.toJSON(),
-      data: JSON.parse(entry.data)
-    }));
-
-    res.json(parsedData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Create or Update Cutting vs Packing Data
 exports.saveMouldingData = async (req, res) => {
