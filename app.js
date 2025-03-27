@@ -39,6 +39,7 @@ const dispatchResponseRoutes = require('./routes/dispatchResponseRoutes');
 const mouldingRoutes = require('./routes/mouldingRoutes');
 const cuttingVsPackingRoutes = require('./routes/cuttingVsPackingRoutes');
 const mouldingNewRoutes = require('./routes/mouldingNewRoutes');
+const additionalOrderInfoRoutes = require('./routes/additionalOrderInfoRoutes');
 
 
 
@@ -99,6 +100,7 @@ app.use('/api', dispatchResponseRoutes);
 app.use('/api', mouldingRoutes);
 app.use('/api', cuttingVsPackingRoutes);
 app.use('/api', mouldingNewRoutes);
+app.use('/api', additionalOrderInfoRoutes);
 
 
 
