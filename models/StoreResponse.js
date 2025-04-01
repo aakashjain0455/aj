@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Adjust this path based on your project structure
+const sequelize = require('../config/db');
 
 const StoreResponse = sequelize.define('StoreResponse', {
   orderNumber: {
@@ -26,7 +26,11 @@ const StoreResponse = sequelize.define('StoreResponse', {
   balanceWireRequired: {
     type: DataTypes.FLOAT,
     allowNull: true,
-},
+  },
+  wireIssued: { // ✅ ADD THIS FIELD
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
 });
 
 module.exports = StoreResponse;
