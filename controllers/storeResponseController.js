@@ -35,7 +35,7 @@ exports.getResponseByOrderNumber = async (req, res) => {
 // Create a new response
 exports.createResponse = async (req, res) => {
   try {
-    const { orderNumber, oldPowercord, wireAvailable, howMuchWireAvailable, storeRemarks, balanceWireRequired } = req.body;
+    const { orderNumber, oldPowercord, wireAvailable, howMuchWireAvailable, storeRemarks, balanceWireRequired, wireIssued } = req.body;
 
     const newResponse = await StoreResponse.create({
       orderNumber,
@@ -43,7 +43,8 @@ exports.createResponse = async (req, res) => {
       wireAvailable,
       howMuchWireAvailable,
       storeRemarks,
-      balanceWireRequired, // Include this field
+      balanceWireRequired,
+      wireIssued, // ✅ Include this field
     });
 
     res.json({ message: 'Response created successfully', data: newResponse });
@@ -56,36 +57,36 @@ exports.createResponse = async (req, res) => {
   }
 };
 
+
 // Update an existing response
 exports.updateResponse = async (req, res) => {
   try {
-    const { id } = req.params; // The orderNumber sent from the frontend
-    const { oldPowercord, wireAvailable, howMuchWireAvailable, storeRemarks, balanceWireRequired } = req.body;
+    const { id } = req.params; // orderNumber from frontend
+    const { oldPowercord, wireAvailable, howMuchWireAvailable, storeRemarks, balanceWireRequired, wireIssued } = req.body;
 
-    // Search for the record by orderNumber
     let response = await StoreResponse.findOne({ where: { orderNumber: id } });
 
     if (!response) {
       console.log(`Order Number ${id} not found. Creating a new record.`);
-      // Create a new record if not found
       response = await StoreResponse.create({
         orderNumber: id,
         oldPowercord,
         wireAvailable,
         howMuchWireAvailable,
         storeRemarks,
-        balanceWireRequired, // Include this field
+        balanceWireRequired,
+        wireIssued, // ✅ Include this field
       });
       return res.status(201).json({ message: 'New record created successfully', data: response });
     }
 
-    // Update the record if it exists
     await response.update({
       oldPowercord,
       wireAvailable,
       howMuchWireAvailable,
       storeRemarks,
-      balanceWireRequired, // Include this field
+      balanceWireRequired,
+      wireIssued, // ✅ Update this field
     });
 
     res.json({ message: 'Response updated successfully', data: response });
@@ -97,6 +98,7 @@ exports.updateResponse = async (req, res) => {
     });
   }
 };
+
 
 // Delete a response
 exports.deleteResponse = async (req, res) => {
