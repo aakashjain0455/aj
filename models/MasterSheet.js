@@ -47,6 +47,8 @@ const MasterSheet = sequelize.define('MasterSheet', {
     coreColour: { type: DataTypes.STRING },
     corePVC: { type: DataTypes.STRING },
     finishing: { type: DataTypes.STRING },
+    planCoilWeight: { type: DataTypes.STRING },
+    coilLength: { type: DataTypes.STRING },
 }, { 
     tableName: 'MasterSheets',  // Explicitly set the correct table name
     timestamps: true 
