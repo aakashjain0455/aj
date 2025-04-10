@@ -73,6 +73,8 @@ exports.updateResponse = async (req, res) => {
     console.log(`🟡 Starting upsert for Order Number: ${id}`);
     console.log(`🧾 wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
 
+    const safeWireIssued = Array.isArray(wireIssued) ? wireIssued : [];
+
     // 🔁 UPSERT = create or update in one go
     const [response, created] = await StoreResponse.upsert({
       orderNumber: id,
