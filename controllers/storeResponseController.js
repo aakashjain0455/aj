@@ -58,38 +58,34 @@ exports.createResponse = async (req, res) => {
 };
 
 
-// Update an existing response
 exports.updateResponse = async (req, res) => {
   try {
-    const { id } = req.params; // orderNumber from frontend
-    const { oldPowercord, wireAvailable, howMuchWireAvailable, storeRemarks, balanceWireRequired, wireIssued } = req.body;
-
-    let response = await StoreResponse.findOne({ where: { orderNumber: id } });
-
-    if (!response) {
-      console.log(`Order Number ${id} not found. Creating a new record.`);
-      response = await StoreResponse.create({
-        orderNumber: id,
-        oldPowercord,
-        wireAvailable,
-        howMuchWireAvailable,
-        storeRemarks,
-        balanceWireRequired,
-        wireIssued, // ✅ Include this field
-      });
-      return res.status(201).json({ message: 'New record created successfully', data: response });
-    }
-
-    await response.update({
+    const { id } = req.params;
+    const {
       oldPowercord,
       wireAvailable,
       howMuchWireAvailable,
       storeRemarks,
       balanceWireRequired,
-      wireIssued, // ✅ Update this field
+      wireIssued,
+    } = req.body;
+
+    console.log(`Saving response for Order ${id}`);
+    console.log(`wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
+
+    const [response, created] = await StoreResponse.upsert({
+      orderNumber: id,
+      oldPowercord,
+      wireAvailable,
+      howMuchWireAvailable,
+      storeRemarks,
+      balanceWireRequired,
+      wireIssued,
     });
 
-    res.json({ message: 'Response updated successfully', data: response });
+    const message = created ? 'New record created successfully' : 'Response updated successfully';
+    res.status(created ? 201 : 200).json({ message, data: response });
+
   } catch (error) {
     console.error('Error saving response:', error.message);
     res.status(500).json({
@@ -98,6 +94,7 @@ exports.updateResponse = async (req, res) => {
     });
   }
 };
+
 
 
 // Delete a response
