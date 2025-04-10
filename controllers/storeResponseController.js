@@ -71,22 +71,32 @@ exports.updateResponse = async (req, res) => {
     } = req.body;
 
     console.log(`🟡 Starting upsert for Order Number: ${id}`);
-    console.log(`🧾 wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
+console.log(`🧾 wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
 
-    const safeWireIssued = Array.isArray(wireIssued) ? wireIssued : [];
+// ✅ Safely convert wireIssued to stringified array
+let safeWireIssued;
+try {
+  safeWireIssued = Array.isArray(wireIssued)
+    ? wireIssued
+    : typeof wireIssued === 'string'
+    ? JSON.parse(wireIssued)
+    : [];
+} catch (err) {
+  console.warn('⚠️ wireIssued parse failed. Defaulting to []');
+  safeWireIssued = [];
+}
 
-    // 🔁 UPSERT = create or update in one go
-    const [response, created] = await StoreResponse.upsert({
-      orderNumber: id,
-      oldPowercord,
-      wireAvailable,
-      howMuchWireAvailable,
-      storeRemarks,
-      balanceWireRequired,
-      wireIssued,
-    });
+const [response, created] = await StoreResponse.upsert({
+  orderNumber: id,
+  oldPowercord,
+  wireAvailable,
+  howMuchWireAvailable,
+  storeRemarks,
+  balanceWireRequired,
+  wireIssued: JSON.stringify(safeWireIssued), // ✅ Store safely
+});
 
-    console.log(`✅ Upsert ${created ? 'created' : 'updated'} record for Order ${id}`);
+console.log(`✅ Upsert ${created ? 'created' : 'updated'} record for Order ${id}`);
 
     const message = created
       ? 'New record created successfully'
