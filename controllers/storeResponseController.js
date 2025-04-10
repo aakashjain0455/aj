@@ -70,9 +70,10 @@ exports.updateResponse = async (req, res) => {
       wireIssued,
     } = req.body;
 
-    console.log(`Saving response for Order ${id}`);
-    console.log(`wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
+    console.log(`🟡 Starting upsert for Order Number: ${id}`);
+    console.log(`🧾 wireIssued size: ${JSON.stringify(wireIssued).length} characters`);
 
+    // 🔁 UPSERT = create or update in one go
     const [response, created] = await StoreResponse.upsert({
       orderNumber: id,
       oldPowercord,
@@ -83,18 +84,22 @@ exports.updateResponse = async (req, res) => {
       wireIssued,
     });
 
-    const message = created ? 'New record created successfully' : 'Response updated successfully';
+    console.log(`✅ Upsert ${created ? 'created' : 'updated'} record for Order ${id}`);
+
+    const message = created
+      ? 'New record created successfully'
+      : 'Response updated successfully';
+
     res.status(created ? 201 : 200).json({ message, data: response });
 
   } catch (error) {
-    console.error('Error saving response:', error.message);
+    console.error('❌ Full Error:', error); // ✅ Full stack log
     res.status(500).json({
       error: 'Failed to save store response',
       details: error.message,
     });
   }
 };
-
 
 
 // Delete a response
