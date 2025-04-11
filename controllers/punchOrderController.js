@@ -1,4 +1,3 @@
-// controllers/punchOrderController.js
 const PunchOrder = require('../models/PunchOrder');
 const { v4: uuidv4 } = require('uuid');
 
@@ -9,7 +8,6 @@ exports.getNextOrderNumber = async (req, res) => {
       order: [['createdAt', 'DESC']],
     });
 
-    // Determine next order number
     const nextOrderNumber = lastOrder ? parseInt(lastOrder.orderNumber) + 1 : 1;
     res.json({ nextOrderNumber: nextOrderNumber.toString().padStart(3, '0') });
   } catch (error) {
@@ -18,10 +16,17 @@ exports.getNextOrderNumber = async (req, res) => {
   }
 };
 
-// Create a new punch order
+// Create a new punch order with full details
 exports.createPunchOrder = async (req, res) => {
   try {
-    const { orderNumber, orderQty, ratePerPcs, wbOrB, orderRemarks, partyName, masterId, punchedDateTime, userName  } = req.body;
+    const {
+      orderNumber, orderQty, ratePerPcs, wbOrB, orderRemarks, partyName, masterId, punchedDateTime, userName,
+      wireSpec, core, colour, length, brandNameForPlug, otherBrandName, clientOfAdvancePayment,
+      typeOfPin, backStripping, backCopperStripping, terminal, housing, sleeve, solderingTwisting,
+      backSolder, packing, grommetName, grommetLength, plug, computerSocket, amp, remarksPowerCord,
+      noOfStands, copperStandsDia, brandNameOnWire, coreColours, coreOd, corePVC, outerOd,
+      pvcInOuter, finishing, printingOnWire, wireCmlNo, planCoilWeight, coilLength, remarksWire
+    } = req.body;
 
     const newOrder = await PunchOrder.create({
       orderNumber,
@@ -32,7 +37,14 @@ exports.createPunchOrder = async (req, res) => {
       partyName,
       masterId,
       punchedDateTime,
-      userName, // ✅ Store userName
+      userName,
+
+      // Extra fields
+      wireSpec, core, colour, length, brandNameForPlug, otherBrandName, clientOfAdvancePayment,
+      typeOfPin, backStripping, backCopperStripping, terminal, housing, sleeve, solderingTwisting,
+      backSolder, packing, grommetName, grommetLength, plug, computerSocket, amp, remarksPowerCord,
+      noOfStands, copperStandsDia, brandNameOnWire, coreColours, coreOd, corePVC, outerOd,
+      pvcInOuter, finishing, printingOnWire, wireCmlNo, planCoilWeight, coilLength, remarksWire
     });
 
     res.json(newOrder);
