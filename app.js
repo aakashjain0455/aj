@@ -107,14 +107,14 @@ app.use('/api', additionalOrderInfoRoutes);
 const PORT = process.env.PORT || 5000;
 
 // Function to perform the periodic task
-const performTask = async () => {
-  try {
-    const users = await User.findAll();
-    console.log('Fetched users:', users);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-  }
-};
+//const performTask = async () => {
+ // try {
+  //  const users = await User.findAll();
+ //   console.log('Fetched users:', users);
+//  } catch (error) {
+//    console.error('Error fetching users:', error);
+//  }
+// };
 
 const { QueryTypes } = require('sequelize');
 
@@ -160,6 +160,6 @@ sequelize.sync({ force: false }).then(async () => {
 
 
 // Set up the interval to call performTask every 5 seconds
-setInterval(performTask, 5000);
+//setInterval(performTask, 5000);
 
 module.exports = app;
