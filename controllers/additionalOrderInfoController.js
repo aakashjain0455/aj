@@ -22,7 +22,8 @@ exports.getAdditionalInfo = async (req, res) => {
 
 exports.saveAdditionalInfo = async (req, res) => {
   try {
-    const { orderNumber, expectedDate, inPlanning, remarks, actuals } = req.body;
+    const { orderNumber, expectedDate, inPlanning, remarks, actuals, coreActual, issueDetails } = req.body;
+
 
     if (!orderNumber) return res.status(400).json({ error: 'Missing orderNumber' });
 
@@ -32,8 +33,11 @@ exports.saveAdditionalInfo = async (req, res) => {
       expectedDate,
       inPlanning,
       remarks,
+      coreActual,
+      issueDetails,
       actuals: JSON.stringify(actuals || [])
     };
+    
 
     let saved;
     if (entry) {
