@@ -8,6 +8,9 @@ const AdditionalOrderInfo = sequelize.define('AdditionalOrderInfo', {
   inPlanning: { type: DataTypes.STRING },
   remarks: { type: DataTypes.TEXT },
   actuals: { type: DataTypes.TEXT }, // Store actuals as stringified JSON
+  coreActual: { type: DataTypes.FLOAT },
+issueDetails: { type: DataTypes.TEXT },
+
 }, {
   timestamps: true
 });
