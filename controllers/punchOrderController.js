@@ -66,3 +66,23 @@ exports.getAllPunchOrders = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch punch orders' });
   }
 };
+
+exports.updatePunchOrdersByMasterId = async (req, res) => {
+  const { masterId } = req.params;
+  const updatedFields = req.body;
+
+  try {
+    const [updatedCount] = await PunchOrder.update(updatedFields, {
+      where: { masterId }
+    });
+
+    if (updatedCount === 0) {
+      return res.status(404).json({ message: 'No punch orders found for the given Master ID.' });
+    }
+
+    res.json({ message: `Successfully updated ${updatedCount} punch orders.` });
+  } catch (error) {
+    console.error('Error updating punch orders by Master ID:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
