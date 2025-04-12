@@ -81,3 +81,18 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ error: 'Failed to change password', details: error.message });
   }
 };
+
+let sessionVersion = Date.now(); // global session marker
+
+exports.logoutAllUsers = async (req, res) => {
+  try {
+    sessionVersion = Date.now(); // update version
+    res.status(200).json({ message: 'All users have been logged out', version: sessionVersion });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to logout all users' });
+  }
+};
+
+exports.getSessionVersion = async (req, res) => {
+  res.status(200).json({ version: sessionVersion });
+};
