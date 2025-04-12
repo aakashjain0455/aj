@@ -64,3 +64,14 @@ exports.getAllPunchOrders = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch punch orders' });
   }
 };
+
+exports.updatePunchOrdersByMasterId = async (req, res) => {
+  const { masterId } = req.params;
+  try {
+    const [updated] = await PunchOrder.update(req.body, { where: { masterId } });
+    res.status(200).json({ updatedCount: updated });
+  } catch (error) {
+    console.error("Error updating punch orders:", error);
+    res.status(500).json({ message: "Failed to update punch orders" });
+  }
+};
