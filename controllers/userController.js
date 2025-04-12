@@ -56,6 +56,7 @@ exports.signIn = async (req, res) => {
     const user = await User.findOne({ where: { username, password } });
 
     if (user) {
+      logoutAllUsersFlag = false; // ✅ Reset global logout flag
       res.json(user);
     } else {
       res.status(401).json({ error: 'Invalid username or password' });
@@ -64,6 +65,7 @@ exports.signIn = async (req, res) => {
     res.status(500).json({ error: 'Failed to sign in', details: error.message });
   }
 };
+
 
 exports.changePassword = async (req, res) => {
   try {
