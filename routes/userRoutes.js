@@ -10,6 +10,6 @@ router.post('/users/signin', userController.signIn);
 router.post('/users/change-password', userController.changePassword);  // New route
 
 router.post('/users/logoutAll', userController.logoutAllUsers);
-router.get('/users/sessionVersion', userController.getSessionVersion);
+router.get('/users/shouldLogout', userController.shouldLogout);
 
 module.exports = router;
