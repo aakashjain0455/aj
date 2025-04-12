@@ -19,6 +19,14 @@ const PunchOrder = sequelize.define('PunchOrder', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  poNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  poDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true,
+  }, 
   orderRemarks: {
     type: DataTypes.STRING,
     allowNull: true,
