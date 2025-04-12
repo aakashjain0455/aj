@@ -20,7 +20,7 @@ exports.getNextOrderNumber = async (req, res) => {
 exports.createPunchOrder = async (req, res) => {
   try {
     const {
-      orderNumber, orderQty, ratePerPcs, wbOrB, orderRemarks, partyName, masterId, punchedDateTime, userName,
+      orderNumber, orderQty, ratePerPcs, wbOrB, poNumber, poDate, orderRemarks, partyName, masterId, punchedDateTime, userName,    
       wireSpec, core, colour, length, brandNameForPlug, otherBrandName, clientOfAdvancePayment,
       typeOfPin, backStripping, backCopperStripping, terminal, housing, sleeve, solderingTwisting,
       backSolder, packing, grommetName, grommetLength, plug, computerSocket, amp, remarksPowerCord,
@@ -33,6 +33,8 @@ exports.createPunchOrder = async (req, res) => {
       orderQty,
       ratePerPcs,
       wbOrB,
+      poNumber,
+      poDate,
       orderRemarks,
       partyName,
       masterId,
@@ -62,16 +64,5 @@ exports.getAllPunchOrders = async (req, res) => {
   } catch (error) {
     console.error('Error fetching punch orders:', error);
     res.status(500).json({ error: 'Failed to fetch punch orders' });
-  }
-};
-
-exports.updatePunchOrdersByMasterId = async (req, res) => {
-  const { masterId } = req.params;
-  try {
-    const [updated] = await PunchOrder.update(req.body, { where: { masterId } });
-    res.status(200).json({ updatedCount: updated });
-  } catch (error) {
-    console.error("Error updating punch orders:", error);
-    res.status(500).json({ message: "Failed to update punch orders" });
   }
 };
