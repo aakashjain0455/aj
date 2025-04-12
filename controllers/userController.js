@@ -82,17 +82,17 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-let sessionVersion = Date.now(); // global session marker
+let logoutAllUsersFlag = false;
 
 exports.logoutAllUsers = async (req, res) => {
   try {
-    sessionVersion = Date.now(); // update version
-    res.status(200).json({ message: 'All users have been logged out', version: sessionVersion });
+    logoutAllUsersFlag = true;
+    res.status(200).json({ message: 'All users have been logged out' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to logout all users' });
   }
 };
 
-exports.getSessionVersion = async (req, res) => {
-  res.status(200).json({ version: sessionVersion });
+exports.shouldLogout = async (req, res) => {
+  res.status(200).json({ logout: logoutAllUsersFlag });
 };
